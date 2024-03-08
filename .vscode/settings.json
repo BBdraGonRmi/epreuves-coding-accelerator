@@ -1,0 +1,5 @@
+{
+    "[git-commit]": {
+        "editor.wordWrap": "wordWrapColumn"
+    }
+}
