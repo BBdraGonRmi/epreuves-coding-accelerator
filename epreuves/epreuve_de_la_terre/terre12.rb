@@ -21,13 +21,11 @@ if is_valid(ARGV)
     while swap != 0
         swap = 0
         for i in 0...(nums.length - 1)
-            for j in 1...nums.length
-                if nums[j] < nums[i]
-                    p = nums[j]
-                    nums[j] = nums[i]
-                    nums[i] = p
-                    swap += 1
-                end
+            if nums[i + 1] < nums[i]
+                p = nums[i + 1]
+                nums[i + 1] = nums[i]
+                nums[i] = p
+                swap += 1
             end
         end
     end
