@@ -1,18 +1,18 @@
-def is_valid(argv)
-    if argv.length == 0
-        return false
+def is_valid(argument, number)
+    if argument.length != number
+        return argument
     else
-        return true
+        puts "Usage: ruby eau02.rb argument (this program needs at least one argument to work)"
+        exit
     end
 end
 
-if is_valid(ARGV)
-    argv = ARGV
-    reversed = []
-    for i in 0...argv.length
-        reversed[i] = argv[-(i+1)]
-    end
-    puts reversed
-else
-    puts "erreur."
+argument = ARGV
+words_array = is_valid(argument, 0)
+words_array_reversed = []
+
+for word in words_array.reverse
+    words_array_reversed.push(word)
 end
+
+puts words_array_reversed

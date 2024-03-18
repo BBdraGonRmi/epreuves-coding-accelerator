@@ -1,21 +1,41 @@
-def is_valid(argv)
-    if argv.length != 2 || Integer(argv[0], exception: false) != nil || Integer(argv[1], exception: false) != nil
-        return false
+def is_valid(argument, number)
+    if argument.length != number
+        puts "Usage: ruby terre11.rb argument"
+        exit
     else
-        return true
+        return argument
+    end
+  end
+
+def is_string(word)
+    for character in word.chars
+        if Integer(character, exception: false) == nil
+            return word
+        else
+            puts "Usage: arguments must be strings"
+            exit
+        end
     end
 end
 
-def s_in_s(long, short)
-    for i in 0...long.length
-        if short[0] == long[i] && Integer(long[i], exception: false) != nil
-            for j in 0...short.length
-                puts short[j]
-                puts long[i]
-                if short[j] != long[i] && Integer(long[i], exception: false) != nil
+def sorts_strings(first_string, second_string)
+    if first_string.length > second_string.length
+        long_string = first_string
+        short_string = second_string
+    else
+        long_string = second_string
+        short_string = first_string
+    end
+    return long_string, short_string
+end
+
+def string_is_in_string(long_string, short_string)
+    for character in long_string.chars
+        if short_string[0] == long_string[character]
+            for character in short_string.chars
+                if short_string[character] != long_string[character]
                     return false
                 end
-                i += 1
             end
             return true
         end
@@ -23,19 +43,9 @@ def s_in_s(long, short)
     return false
 end
 
-if is_valid(ARGV)
-    if ARGV[0].length > ARGV[1].length
-        long = ARGV[0]
-        short = ARGV[1]
-    else
-        long = ARGV[1]
-        short = ARGV[0]
-    end
-    if s_in_s(long, short)
-        puts true
-    else
-        puts false
-    end
-else
-    puts "error"
-end
+argument = is_valid(ARGV, 2)
+first_string = is_string(argument[0])
+second_string = is_string(argument[1])
+sorted_strings = sorts_strings(first_string, second_string)
+
+puts string_is_in_string(sorted_strings[0], sorted_strings[1])

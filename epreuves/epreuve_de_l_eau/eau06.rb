@@ -1,66 +1,62 @@
-def is_valid(argv)
-    if argv.length != 1
-        return false
+def is_valid(argument, number)
+    if argument.length != number
+        puts "Usage: ruby terre11.rb argument"
+        exit
     else
-        return true
+        return argument
+    end
+  end
+
+def is_sentence(sentence)
+    for character in sentence.chars
+        if Integer(character, exception: false) == nil
+            return sentence
+        else
+            puts "Usage: argument must be a sentence"
+            exit
+        end
     end
 end
 
-def is_letter(text)
-    for i in 0...text.length
-        if Integer(text[i], exception: false) != nil
-            return false
-        end
-    end
-    return true
-end 
-
-def to_upper(c)
-    if c !=~ /[\W]/
-        c = c.upcase
-        return c
+def to_upcase(character)
+    if character =~ /[a-z]/
+        character = (character.ord - 32).chr
+        return character
     else
-        return false
+        return character
     end
 end
 
-def to_lower(c)
-    if c !=~ /[\W]/
-        c = c.downcase
-        return c
+def to_downcase(character)
+    if character =~ /[A-Z]/
+        character = (character.ord + 32).chr
+        return character
     else
-        return false
+        return character
     end
 end
 
-if is_valid(ARGV)
-    if is_letter(ARGV[0])
-        text = ARGV[0]
-        mod_txt = ""
-        p = 0
-        while text[p + 1] != nil
-            if to_upper(text[p])
-                mod_txt[p] = to_upper(text[p])
-                p += 1
-                if to_lower(text[p])
-                    mod_txt[p] = to_lower(text[p])
-                    p += 1
-                else
-                    mod_txt[p] = text[p]
-                    p += 1
-                end
-            else
-                mod_txt[p] = text[p]
-                p += 1
-            end
+argument = ARGV
+sentence = is_sentence(is_valid(argument, 1)[0])
+modified_sentence = ""
+character_index = 0
+current_character = sentence[character_index]
+case_selector = "upcase"
+
+while current_character != nil
+    if current_character =~ /[A-Z|a-z]/
+        if case_selector == "upcase"
+            modified_sentence[character_index] = to_upcase(current_character)
+            case_selector = "downcase"
+        else
+            modified_sentence[character_index] = to_downcase(current_character)
+            case_selector = "upcase"
         end
-        if text[p] != nil
-            mod_txt[p] = to_upper(text[p])
-        end
-        puts mod_txt
     else
-        puts "error"
+        modified_sentence[character_index] = current_character
     end
-else
-    puts "error"
-end 
+    character_index += 1
+    current_character = sentence[character_index]
+end
+
+puts modified_sentence
