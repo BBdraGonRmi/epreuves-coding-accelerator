@@ -1,4 +1,4 @@
-def is_valid(argument, number)
+def are_valid_arguments(arguments, number_arguments)
   if argument.length != number
       puts "Usage: ruby terre11.rb argument"
       exit
@@ -8,7 +8,7 @@ def is_valid(argument, number)
 end
 
 def is_h24_time_format(time)
-  if time.match(/^([01]\d|2[0-4]):[0-5]\d$/)
+  if time.match(/^([01]\d|2[0-3]):[0-5]\d$/)
     return time.chars
   else
     puts "Usage: the argument should be write in h24 time format"

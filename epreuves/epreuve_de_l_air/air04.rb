@@ -18,24 +18,20 @@ def sentence_is_valid(sentence)
   end
 end
 
-def to_array(sentence, string_separator)
-  array_index = 0
-  word = ""
-  sentence_array = []
+def skip_character_when_same(sentence)
+  next_character_index = 1
+  modified_sentence = ""
   for each_character in sentence.chars
-    if each_character =~ string_separator
-      sentence_array[array_index] = word
-      word = ""
-      array_index += 1
+    if each_character != sentence[next_character_index]
+        modified_sentence << each_character
+        next_character_index += 1
     else
-      word << each_character
+      next_character_index += 1
     end
   end
-  sentence_array[array_index] = word
-  return sentence_array
+  return modified_sentence
 end
 
 
-sentence_array = to_array(sentence_is_valid(arguments_are_valid(ARGV, 1)[0]), /\s/)
-
-puts sentence_array
+modified_sentence = skip_character_when_same(sentence_is_valid(arguments_are_valid(ARGV, 1)[0]))
+puts modified_sentence

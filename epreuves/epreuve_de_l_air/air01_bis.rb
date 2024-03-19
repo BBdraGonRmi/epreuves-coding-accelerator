@@ -7,14 +7,6 @@ def arguments_are_valid(arguments, arguments_number)
   end
 end
 
-def get_sentence(arguments, index_of_arguments)
-  return arguments[index_of_arguments]
-end
-
-def get_string_separator(arguments, index_of_arguments)
-  return arguments[index_of_arguments]
-end
-
 def sentence_is_valid(sentence)
   for each_character in sentence.chars
       if Integer(each_character, exception: false) == nil
@@ -36,7 +28,7 @@ def to_array(sentence, string_separator)
   if string_separator_index == nil
     return sentence
   else
-    for each_character in sentence.chars
+    while sentence_index < sentence.length
       if sentence_index == string_separator_index
         sentence_array[array_index] = separated_string
         separated_string = ""
@@ -53,9 +45,6 @@ def to_array(sentence, string_separator)
 end
 
 
-argumrents = arguments_are_valid(ARGV, 2)
-sentence = get_sentence(argumrents, 0)
-string_separator = get_string_separator(arguments, 1)
-sentence_array = to_array(sentence_is_valid(sentence, string_separator)
+sentence_array = to_array(sentence_is_valid(arguments_are_valid(ARGV, 2)[0]), ARGV[1])
 
 puts sentence_array

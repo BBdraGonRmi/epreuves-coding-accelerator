@@ -32,6 +32,7 @@ end
 def string_is_in_string(long_string, short_string)
     for character in long_string.chars
         if short_string[0] == long_string[character]
+            puts character
             for character in short_string.chars
                 if short_string[character] != long_string[character]
                     return false

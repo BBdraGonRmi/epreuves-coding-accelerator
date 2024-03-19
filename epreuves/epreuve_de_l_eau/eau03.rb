@@ -7,7 +7,7 @@ def is_valid(argument, number)
     end
   end
 
-def is_number(number)
+def is_valid_number(number)
     if Integer(number, exception: false) == nil
         puts "Usage: the argument must be a number"
         exit
