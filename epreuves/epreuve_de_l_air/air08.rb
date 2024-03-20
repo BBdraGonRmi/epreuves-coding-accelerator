@@ -24,7 +24,6 @@ end
 def numbers_are_valid(numbers)
   for each_number in numbers
     if Integer(each_number, exception: false) == nil
-      puts each_number
       puts "Usage: each argument must be a number"
       exit
     end
