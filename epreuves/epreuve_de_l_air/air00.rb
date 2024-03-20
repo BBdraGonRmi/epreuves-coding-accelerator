@@ -18,7 +18,7 @@ def sentence_is_valid(sentence)
   end
 end
 
-def to_array(sentence, string_separator)
+def to_sentence_array(sentence, string_separator)
   array_index = 0
   word = ""
   sentence_array = []
@@ -36,6 +36,6 @@ def to_array(sentence, string_separator)
 end
 
 
-sentence_array = to_array(sentence_is_valid(arguments_are_valid(ARGV, 1)[0]), /\s/)
+sentence_array = to_sentence_array(sentence_is_valid(arguments_are_valid(ARGV, 1)[0]), /\s/)
 
 puts sentence_array
