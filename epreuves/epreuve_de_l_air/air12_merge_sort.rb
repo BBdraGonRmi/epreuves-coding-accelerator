@@ -23,42 +23,38 @@ def sort_array(numbers_array)
     return numbers_array
   end
 
-  left_array = []
-  right_array = []
-  pivot_number = numbers_array[-1]
-  left_array_index = 0
-  numbers_array.pop
+  middle_array_index = numbers_array.length / 2
+  left_array = numbers_array[0...middle_array_index]
+  right_array = numbers_array[middle_array_index..-1]
 
-  for each_number in numbers_array
+  merge_arrays(sort_array(left_array), sort_array(right_array))
 
-    if numbers_array[left_array_index] > pivot_number
-      right_array << numbers_array[left_array_index]
-      left_array_index += 1
-    else
-      left_array << numbers_array[left_array_index]
-      left_array_index += 1
-    end
-  end
-
-  merge_arrays(pivot_number, sort_array(left_array), sort_array(right_array))
 end
 
 
-def merge_arrays(pivot_number, left_array, right_array)
+def merge_arrays(left_sorted_array, right_sorted_array)
 
-  if left_array.length < 1
-    sorted_array = [pivot_number, right_array]
+  if left_sorted_array.length < 1
+    sorted_array = right_sorted_array
     return sorted_array
   end
 
-  if right_array.length < 1
-    sorted_array = [left_array, pivot_number]
+  if right_sorted_array.length < 1
+    sorted_array = left_sorted_array
     return sorted_array
   end
 
-  sorted_array = [left_array, pivot_number, right_array].flatten
-  return sorted_array
-  sorted_array << merge_arrays(pivot_number, left_array, right_array)
+  left_number = left_sorted_array[0]
+  right_number = right_sorted_array[0]
+
+  if left_number < right_number
+    sorted_array = [left_sorted_array.shift]
+  else
+    sorted_array = [right_sorted_array.shift]
+  end
+
+  sorted_array << merge_arrays(left_sorted_array, right_sorted_array)
+  return sorted_array.flatten
 end
 
 def put_modified_array_in_string(numbers_array)
