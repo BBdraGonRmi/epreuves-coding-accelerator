@@ -35,7 +35,11 @@ def to_sentence_array(sentence, string_separator)
   return sentence_array
 end
 
+def main()
 
-sentence_array = to_sentence_array(sentence_is_valid(arguments_are_valid(ARGV, 1)[0]), /\s/)
+  sentence_array = to_sentence_array(sentence_is_valid(arguments_are_valid(ARGV, 1)[0]), /\s/)
 
-puts sentence_array
+  puts sentence_array
+end
+
+main()

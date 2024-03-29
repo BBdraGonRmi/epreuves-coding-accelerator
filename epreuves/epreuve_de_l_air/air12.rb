@@ -17,7 +17,7 @@ def numbers_are_valid(numbers)
   return numbers
 end
 
-def sort_array(numbers_array)
+def split_array(numbers_array)
 
   if numbers_array.length <= 1
     return numbers_array
@@ -40,11 +40,11 @@ def sort_array(numbers_array)
     end
   end
 
-  merge_arrays(pivot_number, sort_array(left_array), sort_array(right_array))
+  sort_arrays(pivot_number, split_array(left_array), split_array(right_array))
 end
 
 
-def merge_arrays(pivot_number, left_array, right_array)
+def sort_arrays(pivot_number, left_array, right_array)
 
   if left_array.length < 1
     sorted_array = [pivot_number, right_array]
@@ -58,7 +58,7 @@ def merge_arrays(pivot_number, left_array, right_array)
 
   sorted_array = [left_array, pivot_number, right_array].flatten
   return sorted_array
-  sorted_array << merge_arrays(pivot_number, left_array, right_array)
+  sorted_array << sort_arrays(pivot_number, left_array, right_array)
 end
 
 def put_modified_array_in_string(numbers_array)
@@ -68,4 +68,4 @@ end
 
 numbers_array = numbers_are_valid(arguments_are_present(ARGV))
 
-puts "array is complitely sorted: #{put_modified_array_in_string(sort_array(numbers_array))}"
+puts "array is complitely sorted: #{put_modified_array_in_string(split_array(numbers_array))}"

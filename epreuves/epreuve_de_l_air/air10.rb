@@ -19,7 +19,6 @@ end
 
 def read_file(file)
   file_data = file.read
-  #file_data = file.read.split
   return file_data
 end
 

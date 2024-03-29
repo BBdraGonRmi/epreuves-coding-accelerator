@@ -56,6 +56,6 @@ end
 argumrents = arguments_are_valid(ARGV, 2)
 sentence = get_sentence(argumrents, 0)
 string_separator = get_string_separator(arguments, 1)
-sentence_array = to_array(sentence_is_valid(sentence, string_separator)
+sentence_array = to_array(sentence_is_valid(sentence, string_separator))
 
 puts sentence_array

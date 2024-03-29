@@ -14,9 +14,6 @@ def find_the_intruder(arguments) # Not working for every case
     intruder = true
     for i in comparing_arguments_index_start..arguments.length
       if each_argument == arguments[i]
-        puts each_argument
-        puts arguments[i]
-        puts i
         intruder = false
       end
     end
