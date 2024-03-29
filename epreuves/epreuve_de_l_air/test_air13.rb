@@ -1,3 +1,12 @@
+class String
+  def red;            "\e[31m#{self}\e[0m" end
+  def green;          "\e[32m#{self}\e[0m" end
+end
+
+program = {
+  "name"  =>
+}
+
 def load_file_names(folder_name, file_format)
   file_names_array = []
   files_in_folder = to_words_array(%x(ls), /\n/)
@@ -35,6 +44,14 @@ def test_output(program_name, argument)
   end
 end
 
+def test_program_takes_one_argument(program_name)
+  output = %x(ruby #{program_name} "argument")
+  if output == "Usage: ruby program_name.rb arguments\n"
+    return false
+  else
+    return true
+  end
+end
 
 argument = "Salut les gars"
 
@@ -43,6 +60,21 @@ file_format = /^air\d\d.rb$/
 
 file_names_array = load_file_names(folder_name, file_format)
 
+success_counter = 0
+test_counter = 0
+
 for each_file in file_names_array
-  puts test_output(each_file, argument)
+  test_result = test_program_takes_one_argument(each_file)
+
+  test_counter += 1
+  if test_result == true
+    test_result = "success".green
+    success_counter += 1
+  else
+    test_result = "failure".red
+  end
+  puts "#{each_file[0...-3]}: #{test_result}"
 end
+
+puts "..."
+puts "Total success: (#{success_counter}/#{test_counter})"
