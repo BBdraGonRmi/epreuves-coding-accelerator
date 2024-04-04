@@ -30,7 +30,7 @@ end
 def build_a_pyramide(parameters)
   tile_shape = parameters[0]
   pyramide_size = Integer(parameters[1])
-  for i in 0..pyramide_size
+  for i in 0...pyramide_size
     print " " * (pyramide_size - (i + 1)) + tile_shape * (i + 1) + tile_shape * i
     puts
   end
