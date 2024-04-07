@@ -37,6 +37,7 @@ def put_file_in_an_array(file)
 
     elsif each_character =~ /\n/
       array_index += 1
+      file_sub_array
       file_array << file_sub_array
       file_sub_array = []
       next
@@ -48,42 +49,43 @@ def put_file_in_an_array(file)
     file_sub_array << each_character
   end
 
+  file_array << file_sub_array
   return file_array
 end
 
 
-def find_shape(reference_array, shape_to_find_array, *rest)
+def find_sub_array_shape(reference_sub_array, shape_to_find_sub_array, *rest)
 
-  result_array = []
   element_to_find_index = 0
-
 
   if rest[0] == nil
     starting_index = 0
-    matching_index = 0
+    matching_element_index = 0
   else
     starting_index = rest[0]
-    matching_index = rest[0]
+    matching_element_index = rest[0]
   end
-  #p "array to match: #{shape_to_find_array}"
-  #puts
 
-  for i in starting_index...reference_array.length
+  for i in starting_index...reference_sub_array.length
 
-    #p "searching in array for element: #{each_element}"
-    #p "element to find: #{shape_to_find_array[element_to_find_index]}"
-    #puts
+    if shape_to_find_sub_array[element_to_find_index] == nil
 
-    if shape_to_find_array[element_to_find_index] == nil
+      p "element: #{shape_to_find_sub_array[element_to_find_index]} found at index: #{i}"
+
       element_to_find_index += 1
-    elsif reference_array[i] == shape_to_find_array[element_to_find_index]
+
+    elsif reference_sub_array[i] == shape_to_find_sub_array[element_to_find_index]
+
+      p "element: #{shape_to_find_sub_array[element_to_find_index]} found at index: #{i}"
+
       element_to_find_index += 1
+
     else
-      matching_index += 1
+      matching_element_index += 1
     end
 
-    if element_to_find_index >= shape_to_find_array.length
-      return matching_index
+    if element_to_find_index >= shape_to_find_sub_array.length
+      return matching_element_index
     end
   end
 
@@ -91,41 +93,74 @@ def find_shape(reference_array, shape_to_find_array, *rest)
 end
 
 
-arguments = arguments_are_valid(ARGV, 2)
+def find_complete_shape(reference_array, shape_to_find_array, reference_element_starting_index)
 
-board_file_data = read_file(file_name_is_valid(arguments[0]))#.delete("\r")
-to_find_file_data = read_file(file_name_is_valid(arguments[1]))#.delete("\r")
+  reference_sub_array_starting_index = 0
+  matching_sub_array_index = 0
+  matching_element_index_array = []
+  coordinates = []
 
-reference_array = put_file_in_an_array(board_file_data)
-shape_to_find_array = put_file_in_an_array(to_find_file_data)
+  for i in 0...shape_to_find_array.length
 
-find_array = []
+    for j in reference_sub_array_starting_index...reference_array.length
 
-for i in 0...shape_to_find_array.length
+      matching_element_index_array[i] = find_sub_array_shape(reference_array[j], shape_to_find_array[i], reference_element_starting_index)
 
-  for j in 0...reference_array.length
+      if matching_element_index_array[i]
 
-    if find_shape(reference_array[j], shape_to_find_array[i]) != false
+        p "sub array: #{shape_to_find_array[i]} found in reference sub array: #{reference_array[j][reference_element_starting_index...]} at index: #{matching_element_index_array[i]}"
+        puts
 
-      x_coordinates = find_shape(reference_array[j], shape_to_find_array[i])
-      y_coordinates = j
+        reference_sub_array_starting_index += 1
 
-
-      matching_index = find_shape(reference_array[y_coordinates + 1], shape_to_find_array[x_coordinates + 1])
-
-      if x_coordinates == matching_index
-        p "found"
-      else
-        p x_coordinates = find_shape(reference_array[y_coordinates], shape_to_find_array[i], matching_index)
-
-        if x_coordinates == matching_index
-        p "finally found"
+        if matching_element_index_array.length > 1
+          if matching_element_index_array[i] != matching_element_index_array[i - 1]
+            return false
+          end
         end
+
+        break
+      else
+        p "sub array: #{shape_to_find_array[i]} NOT found in reference sub array: #{reference_array[j]}"
+        puts
+
+        reference_sub_array_starting_index += 1
+        matching_sub_array_index += 1
       end
-      exit
     end
   end
+
+  coordinates = [matching_element_index_array[0], matching_sub_array_index]
+  return coordinates
 end
+
+
+arguments = arguments_are_valid(ARGV, 2)
+
+board_file_data = read_file(file_name_is_valid(arguments[0]))
+to_find_file_data = read_file(file_name_is_valid(arguments[1]))
+
+p reference_array = put_file_in_an_array(board_file_data)
+p shape_to_find_array = put_file_in_an_array(to_find_file_data)
+puts
+
+reference_element_starting_index = 0
+
+for i in reference_element_starting_index..(reference_array[0].length - shape_to_find_array[0].length)
+
+  coordinates = find_complete_shape(reference_array, shape_to_find_array, i)
+
+end
+
+if coordinates
+  puts "shape found at coordinates: #{coordinates}"
+else
+  puts "shape not found"
+end
+
+
+
+
 
 
 #p find_shape(reference_array[2], shape_to_find_array[1])
