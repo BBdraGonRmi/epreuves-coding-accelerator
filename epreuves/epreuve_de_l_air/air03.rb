@@ -38,21 +38,21 @@ def find_intruders(arguments)
   return intruders
 end
 
-def concatanate_elements_to_string(elements, separator)
+def concatanate_elements_in_string_with_separator(elements, separator)
 
-  string_of_elements = ""
+  elements_string = ""
 
   for each_element in elements
 
     if each_element == elements[-1]
-      string_of_elements << each_element
+      elements_string << each_element
 
     else
-      string_of_elements << (each_element + separator)
+      elements_string << (each_element + separator)
     end
   end
 
-  return string_of_elements
+  return elements_string
 end
 
 
@@ -63,7 +63,7 @@ def main()
   intruders = find_intruders(arguments)
   separator = ", "
 
-  puts concatanate_elements_to_string(intruders, separator)
+  puts concatanate_elements_in_string_with_separator(intruders, separator)
 end
 
 main()

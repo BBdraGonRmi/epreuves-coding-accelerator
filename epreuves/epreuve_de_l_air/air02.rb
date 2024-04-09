@@ -11,7 +11,7 @@ end
 
 
 #UTILITY FUNCTIONS
-def concatanate_elements_to_string(elements, separator)
+def concatanate_elements_to_string(elements_array, separator)
 
   string_of_elements = ""
 

@@ -1,3 +1,4 @@
+#ERROR HANDLING FUNCTIONS
 def arguments_are_present(arguments)
   if arguments.length == 0
       puts "Usage: ruby program_name.rb arguments"
@@ -7,83 +8,102 @@ def arguments_are_present(arguments)
   end
 end
 
-def get_numbers(arguments, number_of_arguments_to_pop)
-  arguments.pop(number_of_arguments_to_pop)
-  numbers_array = []
-  for each_argument in arguments
-    numbers_array << Integer(each_argument)
-  end
-  return numbers_array
-end
+def elements_are_numbers(elements_array)
 
-def get_element_to_insert(arguments, index_of_arguments)
-  new_element = Integer(arguments[index_of_arguments])
-  return new_element
-end
+  for each_element in elements_array
 
-def numbers_are_valid(numbers)
-  for each_number in numbers
-    if Integer(each_number, exception: false) == nil
-      puts "Usage: each argument must be a number"
+    if Integer(each_element, exception: false) == nil
+      puts "Error: each element must be a number"
       exit
     end
   end
-  return numbers
+
+  numbers_array = elements_array
+  return numbers_array
 end
 
-def get_double_numbers_array(arguments)
+def array_is_sorted(numbers_array)
+
+  for i in 0...(numbers_array.length - 1)
+
+    if numbers_array[i] >= numbers_array[i + 1]
+      puts "Error: numbers array is not sorted"
+      exit
+    end
+  end
+
+  return numbers_array
+end
+
+
+#UTILITY FUNCTIONS
+def get_double_numbers_array(elements_array)
+
   first_array_insertion = true
   first_numbers_array = []
   second_numbers_array = []
-  for each_argument in arguments
+
+  for each_argument in elements_array
+
     if each_argument =~ /^fusion$/
       first_array_insertion = false
+
     elsif first_array_insertion == true
       first_numbers_array << each_argument
+
     else
       second_numbers_array << each_argument
     end
   end
+
   return first_numbers_array, second_numbers_array
 end
 
-def insert_in_sorted_array(numbers_array, new_element)
-  modified_numbers_array = []
-  number_inserted = false
-  for each_number in numbers_array
-    if number_inserted == false
-      if new_element <= each_number
-        number_inserted = true
-        modified_numbers_array << new_element
-      end
-    end
-    modified_numbers_array << each_number
-  end
-  if number_inserted == false
-    modified_numbers_array << new_element
-  end
-  return modified_numbers_array
-end
+def fuse_two_sorted_arrays(first_numbers_array, second_numbers_array)
 
-def fuse_the_two_arrays(first_numbers_array, second_numbers_array)
-  fused_numbers_array = []
-  for each_number in second_numbers_array
-    first_numbers_array = insert_in_sorted_array(first_numbers_array, each_number)
+  fused_numbers_array = Array.new(first_numbers_array.length + second_numbers_array.length)
+  first_numbers_array_index = 0
+  second_numbers_array_index = 0
+
+  for i in 0...fused_numbers_array.length
+
+    if first_numbers_array[first_numbers_array_index] == nil
+      fused_numbers_array[i] = second_numbers_array[second_numbers_array_index]
+      break
+    end
+
+    if second_numbers_array[second_numbers_array_index] == nil
+      fused_numbers_array[i] = first_numbers_array[first_numbers_array_index]
+      break
+    end
+
+    if first_numbers_array[first_numbers_array_index] <= second_numbers_array[second_numbers_array_index]
+
+      fused_numbers_array[i] = first_numbers_array[first_numbers_array_index]
+      first_numbers_array_index += 1
+
+    else
+      fused_numbers_array[i] = second_numbers_array[second_numbers_array_index]
+      second_numbers_array_index += 1
+    end
   end
-  fused_numbers_array = first_numbers_array
+
   return fused_numbers_array
 end
 
-def put_modified_array_in_string(numbers_array)
-  string_numbers = numbers_array.join(" ")
-  return string_numbers
+
+#RESOLUTION & DISPLAY FUNCTION
+def main()
+
+  arguments = arguments_are_present(ARGV)
+
+  first_numbers_array, second_numbers_array = get_double_numbers_array(arguments)
+  array_is_sorted(elements_are_numbers(first_numbers_array))
+  array_is_sorted(elements_are_numbers(second_numbers_array))
+
+  numbers_string = fuse_two_sorted_arrays(first_numbers_array, second_numbers_array).join(" ")
+
+  puts numbers_string
 end
 
-
-arguments = arguments_are_present(ARGV)
-first_numbers_array, second_numbers_array = get_double_numbers_array(arguments)
-first_numbers_array = numbers_are_valid(first_numbers_array)
-second_numbers_array = numbers_are_valid(second_numbers_array)
-string_numbers = put_modified_array_in_string(fuse_the_two_arrays(first_numbers_array, second_numbers_array))
-
-puts string_numbers
+main()

@@ -1,23 +1,32 @@
+#ERROR HANDLING FUNCTIONS
 def arguments_are_present(arguments)
+
   if arguments.length == 0
       puts "Usage: ruby program_name.rb arguments"
       exit
+
   else
       return arguments
   end
 end
 
-def numbers_are_valid(numbers)
-  for each_number in numbers
-    if Integer(each_number, exception: false) == nil
-      puts "Usage: each argument must be a number"
+def elements_are_numbers(elements_array)
+
+  for each_element in elements_array
+
+    if Integer(each_element, exception: false) == nil
+      puts "Error: each element must be a number"
       exit
     end
   end
-  return numbers
+
+  numbers_array = elements_array
+  return numbers_array
 end
 
-def split_array(numbers_array)
+
+#UTILITY FUNCTIONS
+def split_array_around_pivot_number(numbers_array)
 
   if numbers_array.length <= 1
     return numbers_array
@@ -34,17 +43,18 @@ def split_array(numbers_array)
     if numbers_array[left_array_index] > pivot_number
       right_array << numbers_array[left_array_index]
       left_array_index += 1
+
     else
       left_array << numbers_array[left_array_index]
       left_array_index += 1
     end
   end
 
-  sort_arrays(pivot_number, split_array(left_array), split_array(right_array))
+  quick_sort_arrays(pivot_number, split_array_around_pivot_number(left_array), split_array_around_pivot_number(right_array))
 end
 
 
-def sort_arrays(pivot_number, left_array, right_array)
+def quick_sort_arrays(pivot_number, left_array, right_array)
 
   if left_array.length < 1
     sorted_array = [pivot_number, right_array]
@@ -58,14 +68,16 @@ def sort_arrays(pivot_number, left_array, right_array)
 
   sorted_array = [left_array, pivot_number, right_array].flatten
   return sorted_array
-  sorted_array << sort_arrays(pivot_number, left_array, right_array)
 end
 
-def put_modified_array_in_string(numbers_array)
-  string_numbers = numbers_array.join(" ")
-  return string_numbers
+
+#UTILITY FUNCTIONS
+def main()
+
+  arguments = arguments_are_present(ARGV)
+  numbers_array = elements_are_numbers(arguments)
+
+  puts split_array_around_pivot_number(numbers_array).join(" ")
 end
 
-numbers_array = numbers_are_valid(arguments_are_present(ARGV))
-
-puts "array is complitely sorted: #{put_modified_array_in_string(split_array(numbers_array))}"
+main()

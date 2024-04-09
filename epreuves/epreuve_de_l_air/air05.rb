@@ -1,52 +1,64 @@
+#ERROR HANDLING FUNCTIONS
 def arguments_are_present(arguments)
+
   if arguments.length == 0
       puts "Usage: ruby program_name.rb arguments"
       exit
+
   else
       return arguments
   end
 end
 
-def get_numbers(arguments, number_of_arguments_to_pop)
-  arguments.pop(number_of_arguments_to_pop)
-  numbers = []
-  for each_argument in arguments
-    numbers << Integer(each_argument)
-  end
-  return numbers
-end
+def elements_are_numbers(elements_array)
 
-def get_operator(arguments, index_of_arguments)
-  operator = Integer(arguments[index_of_arguments])
-  return operator
-end
+  for each_element in elements
 
-def numbers_are_valid(numbers)
-  for each_number in numbers
-    if Integer(each_number, exception: false) == nil
-      puts "Usage: each argument must be a number"
+    if Integer(each_element, exception: false) == nil
+      puts "Error: each element must be a number"
       exit
     end
   end
-  return numbers
+
+  numbers_array = elements_array
+  return numbers_array
 end
 
-def compute_each_number(numbers, operator)
-  computing_result_array = []
-  for each_number in numbers
-    computing_result_array << (each_number + operator)
+
+#UTILITY FUNCTIONS
+def get_numbers(elements_array)
+
+  numbers_array = []
+
+  for each_element in elements_array
+    numbers_array << Integer(each_elements)
   end
-  return computing_result_array
+
+  return numbers_array
 end
 
-def put_computed_numbers_in_string(numbers_array)
-  string_numbers = numbers_array.join(" ")
-  return string_numbers
+def compute_each_number(numbers_array, operator)
+
+  results_array = []
+
+  for each_number in numbers_array
+    results_array << (each_number + operator)
+  end
+
+  return results_array
 end
 
-arguments = numbers_are_valid(arguments_are_present(ARGV))
-operator = get_operator(arguments, -1)
-numbers = get_numbers(arguments, 1)
-string_numbers = put_computed_numbers_in_string(compute_each_number(numbers, operator))
 
-puts string_numbers
+#RESOLUTION & DISPLAY FUNCTION
+def main()
+
+  arguments = arguments_are_present(ARGV)
+  arguments_are_numbers(arguments)
+  operator = Integer(arguments[-1])
+  numbers = get_numbers(arguments[0...-1])
+  results_string = compute_each_number(numbers, operator).join(" ")
+
+  puts results_string
+end
+
+main()
