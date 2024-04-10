@@ -15,9 +15,9 @@ def concatanate_elements_to_string(elements_array, separator)
 
   string_of_elements = ""
 
-  for each_element in elements
+  for each_element in elements_array
 
-    if each_element == elements[-1]
+    if each_element == elements_array[-1]
       string_of_elements << each_element
 
     else
