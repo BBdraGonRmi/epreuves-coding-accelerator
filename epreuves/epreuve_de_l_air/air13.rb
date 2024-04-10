@@ -304,21 +304,11 @@ def test_output(tests_hash)
   file_name = tests_hash[:file_name]
   input = tests_hash[:input]
   output = tests_hash[:output]
-
-  p "input: ruby #{file_name} #{input}"
   test_output = %x(ruby "#{file_name}" #{input})
 
   if test_output =~ /#{output}/
-    puts test_output.green
-    puts
     return true
-
   else
-    p "ouput: #{output} ; test_output: #{test_output}"
-    puts test_output.red
-    p test_output
-    p output
-    puts
     return false
   end
 end
