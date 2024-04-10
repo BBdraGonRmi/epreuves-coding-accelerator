@@ -3,9 +3,11 @@ EXPRESSION_ARRAY_index = 1
 SUB_EXPRESSION_INDEX_index = 2
 
 
+#ERROR HANDLING FUNCTIONS
 def arguments_are_valid(arguments, arguments_number)
+
   if arguments.length != arguments_number
-      puts "Usage: ruby program_name.rb arguments"
+      puts "Usage: ruby program_name.rb + #{arguments_number} arguments"
       exit
   else
       return arguments
@@ -13,6 +15,7 @@ def arguments_are_valid(arguments, arguments_number)
 end
 
 
+#UTILITY FUNCTIONS
 def put_expression_in_an_array(expression)
 
   expression_array = []
@@ -151,7 +154,7 @@ def insert_result_in_array(result, array, result_index)
 end
 
 
-def split_expression(expression_array)
+def solve_full_expression(expression_array)
 
   array_index = 0
   sign_found = false
@@ -187,9 +190,20 @@ def split_expression(expression_array)
   sub_expression_array = searched_expression_array[SUB_EXPRESSION_ARRAY_index]
   expression_array = searched_expression_array[EXPRESSION_ARRAY_index]
   sub_expression_index = searched_expression_array[SUB_EXPRESSION_INDEX_index]
-  result = split_expression(sub_expression_array)
 
-  split_expression(insert_result_in_array(result, expression_array, sub_expression_index))
+  result = solve_full_expression(sub_expression_array)
+
+  solve_full_expression(insert_result_in_array(result, expression_array, sub_expression_index))
 end
 
-puts expression_result = split_expression(put_expression_in_an_array(arguments_are_valid(ARGV, 1)[0]))
+
+#RESOLUTION & DISPLAY FUNCTION
+def main()
+
+  argument = arguments_are_valid(ARGV, 1)[0]
+  expression_result = solve_full_expression(put_expression_in_an_array(argument))
+
+  puts expression_result
+end
+
+main()

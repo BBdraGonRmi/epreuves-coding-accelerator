@@ -71,7 +71,7 @@ def quick_sort_arrays(pivot_number, left_array, right_array)
 end
 
 
-#UTILITY FUNCTIONS
+#RESOLUTION & DISPLAY FUNCTION
 def main()
 
   arguments = arguments_are_present(ARGV)

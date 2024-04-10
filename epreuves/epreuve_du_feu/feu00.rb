@@ -1,6 +1,7 @@
+#ERROR HANDLING FUNCTIONS
 def arguments_are_valid(arguments, arguments_number)
   if arguments.length != arguments_number
-      puts "Usage: ruby program_name.rb arguments"
+      puts "Usage: ruby program_name.rb + #{arguments_number} arguments"
       exit
   else
       return arguments
@@ -11,7 +12,7 @@ end
 def parameters_are_digits(parameters)
   for each_digit in parameters
     if Integer(each_digit, exception: false) == nil
-      puts "Usage: each size parameter must be a digit"
+      puts "Error: each size parameter must be a digit"
       exit
     end
   end
@@ -21,16 +22,16 @@ end
 def parameters_are_greater_than_zero(parameters)
   for each_digit in parameters
     if Integer(each_digit) < 1
-      puts "Usage: each size parameter must be greater than 0"
+      puts "Error: each size parameter must be greater than 0"
       exit
     end
   end
   return parameters
 end
 
-def build_a_rectangle(parameters)
-  length = Integer(parameters[0])
-  height = Integer(parameters[1])
+
+#UTILITY FUNCTIONS
+def build_a_rectangle(length, height)
 
   if length > 1
     length_shape = "o" + "-" * (length - 2) + "o"
@@ -51,5 +52,16 @@ def build_a_rectangle(parameters)
   end
 end
 
-parameters = parameters_are_greater_than_zero(parameters_are_digits(arguments_are_valid(ARGV, 2)))
-build_a_rectangle(parameters)
+
+#RESOLUTION & DISPLAY FUNCTION
+def main()
+
+  arguments = arguments_are_valid(ARGV, 2)
+  parameters = parameters_are_greater_than_zero(parameters_are_digits(arguments))
+  length = Integer(parameters[0])
+  height = Integer(parameters[1])
+
+  build_a_rectangle(length, height)
+end
+
+main()
