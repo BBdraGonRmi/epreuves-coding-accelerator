@@ -18,213 +18,120 @@ def file_name_is_valid(file_name)
   return file
 end
 
-
 #UTILITY FUNCTIONS
-def read_file(file)
-  file_data = file.read
-  return file_data
-end
-
-def put_file_in_an_array(file)
-
-  file_array = []
-  file_sub_array = []
-  array_index = 0
-
-  for each_character in file.chars
-
-    if each_character =~ /\r/
+def put_file_in_a_matrix(file, nil_character)
+  matrix_line = []
+  full_matrix = []
+  matrix_column_index = 0
+  file.each_char do |character|
+    if character =~ /\n/
+      matrix_column_index += 1
+      full_matrix << matrix_line
+      matrix_line = []
       next
-
-    elsif each_character =~ /\n/
-      array_index += 1
-      file_sub_array
-      file_array << file_sub_array
-      file_sub_array = []
-      next
-
-    elsif each_character =~ /\s/
-      each_character = nil
     end
-
-    file_sub_array << each_character
+    next if character =~ /\r/
+    character = nil if character =~ nil_character
+    matrix_line << character
   end
-
-  file_array << file_sub_array
-  return file_array
+  full_matrix << matrix_line
+  return full_matrix
 end
 
-
-def find_sub_array_shape(reference_sub_array, shape_to_find_sub_array, *rest)
-
+def find_rows_match(reference_row, row_to_find, *rest)
   element_to_find_index = 0
-
-  if rest[0] == nil
-    starting_index = 0
-    matching_element_index = 0
-  else
-    starting_index = rest[0]
-    matching_element_index = rest[0]
-  end
-
-  for i in starting_index...reference_sub_array.length
-
-    if shape_to_find_sub_array[element_to_find_index] == nil
+  rest[0] == nil ? starting_index = 0 : starting_index = rest[0]
+  first_matching_element_index = starting_index
+  (starting_index...reference_row.length).each do |i|
+    if row_to_find[element_to_find_index] == nil
       element_to_find_index += 1
-
-    elsif reference_sub_array[i] == shape_to_find_sub_array[element_to_find_index]
+    elsif row_to_find[element_to_find_index] == reference_row[i]
       element_to_find_index += 1
-
     else
-      matching_element_index += 1
+      first_matching_element_index += 1
     end
-
-    if element_to_find_index >= shape_to_find_sub_array.length
-      return matching_element_index
-    end
+    return first_matching_element_index if element_to_find_index >= row_to_find.length
   end
-
   return false
 end
 
-
-def find_shape_at_given_index(reference_array, shape_to_find_array, reference_element_starting_index)
-
-  reference_sub_array_starting_index = 0
-  matching_sub_array_index = 0
-  matching_element_index_array = []
-  coordinates = []
-
-  for i in 0...shape_to_find_array.length
-
-    for j in reference_sub_array_starting_index...reference_array.length
-      matching_element_index_array[i] = find_sub_array_shape(reference_array[j], shape_to_find_array[i], reference_element_starting_index)
-
-      if matching_element_index_array[i]
-        reference_sub_array_starting_index += 1
-
-        if matching_element_index_array.length > 1
-
-          if matching_element_index_array[i] != matching_element_index_array[i - 1]
-            return false
-          end
-        end
-        break
-
-      else
-        if matching_element_index_array[0]
-          return false
-        end
-
-        reference_sub_array_starting_index += 1
-        matching_sub_array_index += 1
+def find_matrices_match_at_given_index(reference_matrix, matrix_to_find, element_starting_index)
+  row_starting_index = 0
+  matching_rows_index = 0
+  matching_elements_index_array = []
+  matrix_to_find.each_with_index do |row_to_find, i|
+    (row_starting_index...reference_matrix.length).each do |j|
+      matching_elements_index_array[i] = find_rows_match(reference_matrix[j], row_to_find, element_starting_index)
+      row_starting_index += 1
+      if matching_elements_index_array.length > 1
+        return false if matching_elements_index_array[i] != matching_elements_index_array[i - 1]
       end
+      break if matching_elements_index_array[i]
+      return false if matching_elements_index_array[0]
+      matching_rows_index += 1
     end
   end
-
-  if matching_element_index_array[0]
-    coordinates = [matching_element_index_array[0], matching_sub_array_index]
-    return coordinates
-
-  else
-    return false
-  end
+  coordinates = [matching_elements_index_array[0], matching_rows_index]
+  return coordinates
 end
 
-def find_shape(reference_array, shape_to_find_array)
-
-  reference_element_starting_index = 0
-
-  for i in reference_element_starting_index..(reference_array[0].length - shape_to_find_array[0].length)
-
-    coordinates = find_shape_at_given_index(reference_array, shape_to_find_array, i)
-
-    if coordinates
-      coordinates_string = coordinates.join(", ")
-      return coordinates_string
-    end
+def find_matrices_match(reference_matrix, matrix_to_find)
+  (0..(reference_matrix[0].length - matrix_to_find[0].length)).each do |i|
+    coordinates = find_matrices_match_at_given_index(reference_matrix, matrix_to_find, i)
+    return coordinates.join(", ") if coordinates
   end
-
   return false
 end
 
-def build_result_array(reference_array, shape_to_find_array, coordinates_string)
-
-  if coordinates_string == false
-    return false
+def build_result_matrix(reference_matrix, matrix_to_find, coordinates_string)
+  result_matrix = []
+  (0...reference_matrix.length).each do |i|
+    result_matrix << []
+    (0...reference_matrix[0].length).each { |j| result_matrix[i] << "-" }
   end
-
-  result_array = []
-
-  for i in 0...reference_array.length
-    result_array << []
-    for j in 0...reference_array[0].length
-      result_array[i] << "-"
-    end
-  end
-
-  x_coordinates = Integer(coordinates_string[0])
-  y_coordinates = Integer(coordinates_string[-1])
-  shape_to_find_array_index = 0
-  shape_to_find_sub_array_index = 0
-
-  for i in 0...reference_array.length
-
-    if i == y_coordinates
-
-      for j in 0...reference_array[0].length
-
-        if j == x_coordinates
-
-          if shape_to_find_array[shape_to_find_array_index][shape_to_find_sub_array_index] != nil
-            result_array[i][j] = shape_to_find_array[shape_to_find_array_index][shape_to_find_sub_array_index]
+  column_index = Integer(coordinates_string[0])
+  row_index = Integer(coordinates_string[-1])
+  matrix_to_find_index = 0
+  matrix_to_find_row_index = 0
+  (0...reference_matrix.length).each do |i|
+    if i == row_index
+      (0...reference_matrix[0].length).each do |j|
+        if j == column_index
+          if matrix_to_find[matrix_to_find_index][matrix_to_find_row_index]
+            result_matrix[i][j] = matrix_to_find[matrix_to_find_index][matrix_to_find_row_index]
           end
-
-          if shape_to_find_sub_array_index < (shape_to_find_array[0].length - 1)
-            x_coordinates += 1
-            shape_to_find_sub_array_index += 1
+          if matrix_to_find_row_index < (matrix_to_find[0].length - 1)
+            column_index += 1
+            matrix_to_find_row_index += 1
           end
         end
       end
-
-      x_coordinates = Integer(coordinates_string[0])
-      shape_to_find_sub_array_index = 0
-
-      if shape_to_find_array_index < (shape_to_find_array.length - 1)
-        y_coordinates += 1
-        shape_to_find_array_index += 1
+      column_index = Integer(coordinates_string[0])
+      matrix_to_find_row_index = 0
+      if matrix_to_find_index < (matrix_to_find.length - 1)
+        row_index += 1
+        matrix_to_find_index += 1
       end
     end
   end
-
-  return result_array
+  return result_matrix
 end
 
-def convert_two_dimensions_array_into_string(two_dimensions_array)
-
-  if two_dimensions_array == false
-    return false
+def convert_matrix_into_string(matrix)
+  matrix_string = ""
+  matrix.each do |row|
+    matrix_string << row.join
+    matrix_string << "\n"
   end
-
-  result_string = ""
-
-  for i in 0...two_dimensions_array.length
-
-    result_string << two_dimensions_array[i].join
-    result_string << "\n"
-  end
-
-  return result_string
+  return matrix_string
 end
 
 #DISPLAY FUNCTION
-def display_result(coordinates_string, reference_array, shape_to_find_array, result_string)
-
+def display_result(coordinates_string, matrix_string)
   if coordinates_string
     puts "Found!"
     puts "Coordinates: #{coordinates_string}"
-    puts result_string
-
+    puts matrix_string
   else
     puts "Unfindable!"
   end
@@ -233,20 +140,17 @@ end
 
 #RESOLUTION DISPLAY FUNCTION
 def main()
-
   arguments = arguments_are_valid(ARGV, 2)
-
-  board_file_data = read_file(file_name_is_valid(arguments[0]))
-  to_find_file_data = read_file(file_name_is_valid(arguments[1]))
-
-  reference_array = put_file_in_an_array(board_file_data)
-  shape_to_find_array = put_file_in_an_array(to_find_file_data)
-
-  coordinates_string = find_shape(reference_array, shape_to_find_array)
-  result_array = build_result_array(reference_array, shape_to_find_array, coordinates_string)
-  result_string = convert_two_dimensions_array_into_string(result_array)
-
-  display_result(coordinates_string, reference_array, shape_to_find_array, result_string)
+  board_file_data = file_name_is_valid(arguments[0]).read
+  to_find_file_data = file_name_is_valid(arguments[1]).read
+  reference_matrix = put_file_in_a_matrix(board_file_data, /\s/)
+  matrix_to_find = put_file_in_a_matrix(to_find_file_data, /\s/)
+  coordinates_string = find_matrices_match(reference_matrix, matrix_to_find)
+  if coordinates_string
+    result_matrix = build_result_matrix(reference_matrix, matrix_to_find, coordinates_string)
+    matrix_string = convert_matrix_into_string(result_matrix)
+  end
+  display_result(coordinates_string, matrix_string)
 end
 
 main()
