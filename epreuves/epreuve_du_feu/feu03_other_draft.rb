@@ -50,46 +50,79 @@ def try_with_digit(sudoku_matrix, row_index, column_index, digit)
   return digit
 end
 
-def try_with_all_digits(sudoku_matrix, row_index, column_index)
-  (1..9).each do |n|
-    digit = try_with_digit(sudoku_matrix, row_index, column_index, n)
-    #p result
+def try_with_all_digits(result_matrix, row_index, column_index, *rest)
+  rest[0] ? starting_digit = (rest[0] + 1) : starting_digit = 1
+  (starting_digit..9).each do |n|
+    digit = try_with_digit(result_matrix, row_index, column_index, n)
     return digit if digit
   end
   return false
 end
 
-def sudoku_complete(sudoku_matrix)
-  sudoku_matrix.each_with_index do |raw, i|
-    sudoku_matrix[i].each_with_index do |element, j|
-      if sudoku_matrix[i][j] == nil
-        return false
-      end
-    end
-  end
-  return true
-end
+def solve_sudoku(sudoku_matrix, result_matrix, *rest)
+  rest[0]
+  if rest[0]
+    rest[0][-1]
+    last_digit_tried =  rest[0][-1][:digit]
 
-def solve_sudoku(sudoku_matrix)
-  #if sudoku_complete(sudoku_matrix)
-    #return sudoku_matrix
-  #end
-  sudoku_matrix.each_with_index do |raw, i|
-    sudoku_matrix[i].each_with_index do |element, j|
-      if sudoku_matrix[i][j] == nil
-        digit = try_with_all_digits(sudoku_matrix, i, j)
-        if digit
-          sudoku_matrix[i][j] = digit
-          solve_sudoku(sudoku_matrix)
-          sudoku_matrix[i][j] = nil
+    rest[0].pop
+    every_digits_tried = rest[0]
+  else
+    last_digit_tried = nil
+    every_digits_tried = []
+  end
+  last_digit_tried
+  every_result_found = true
+  at_least_one_result_found = false
+  result_matrix.each_with_index do |raw, i|
+    result_matrix[i].each_with_index do |element, j|
+      digits_tried = []
+      if result_matrix[i][j] == nil
+        digit = try_with_all_digits(result_matrix, i, j)
+        if digit && digit != last_digit_tried
+          digit_tried = {
+            digit: digit,
+            i: i,
+            j: j
+          }
+          every_digits_tried << digit_tried
+          result_matrix[i][j] = digit
+          at_least_one_result_found = false
         else
-          #p sudoku_matrix.join()
-          #return sudoku_matrix
+          every_result_found = false
+          break if last_digit_tried
         end
+
+        #last_digit_tried = nil if digit == last_digit_tried
       end
     end
+    break if last_digit_tried
   end
-  return sudoku_matrix
+
+  p "every digits tried: #{every_digits_tried[-1]}"
+  #p sudoku_matrix
+  #puts
+  p "result matrix: #{result_matrix}"
+  puts
+
+  if !every_result_found
+    #p every_digits_tried[-1]
+    p "not every result found"
+    result_matrix[every_digits_tried[-1][:i]][every_digits_tried[-1][:j]] = nil
+    #result_matrix[every_digits_tried[-2][:i]][every_digits_tried[-2][:j]] = nil
+    #every_digits_tried.pop
+    solve_sudoku(result_matrix, result_matrix, every_digits_tried)
+  end
+
+  p "every digits tried - 1: #{every_digits_tried[-1]}"
+  #p sudoku_matrix
+  #puts
+  p "result matrix - 1: #{result_matrix}"
+  puts
+
+
+
+  return result_matrix, every_digits_tried
 end
 
 def convert_matrix_into_string(matrix)
@@ -101,63 +134,54 @@ def convert_matrix_into_string(matrix)
   return matrix_string
 end
 
-class SudokuNode
-  attr_accessor :digits_tried, :parent, :childrens
-
-  def initialize(digits_tried = nil, childrens = [])
-    @digits_tried = digits_tried
-    @childrens = childrens
-  end
-end
-
-
-
-
-
 #RESOLUTION DISPLAY FUNCTION
 def main()
   arguments = arguments_are_valid(ARGV, 1)
   sudoku_file_data = file_name_is_valid(arguments[0]).read
   sudoku_matrix = put_file_in_a_digital_matrix(sudoku_file_data, /\./)
+  result_matrix = put_file_in_a_digital_matrix(sudoku_file_data, /\./)
+  solved_sudoku_matrix, every_digits_tried = solve_sudoku(sudoku_matrix, result_matrix)
+  #solved_sudoku_matrix[-1][-1] = nil
 
+  #solved_sudoku_matrix, every_digits_tried = solve_sudoku(result_matrix, result_matrix, every_digits_tried)
+  #solved_sudoku_matrix, every_digits_tried = solve_sudoku(result_matrix, result_matrix, every_digits_tried)
+  #solved_sudoku_matrix, every_digits_tried = solve_sudoku(result_matrix, result_matrix, every_digits_tried)
+  #solved_sudoku_matrix, every_digits_tried = solve_sudoku(result_matrix, result_matrix, every_digits_tried)
+  #solved_sudoku_matrix, every_digits_tried = solve_sudoku(result_matrix, result_matrix, every_digits_tried)
+  #solved_sudoku_matrix, every_digits_tried = solve_sudoku(result_matrix, result_matrix, every_digits_tried)
+  #solved_sudoku_matrix, every_digits_tried = solve_sudoku(result_matrix, result_matrix, every_digits_tried)
+  #solved_sudoku_matrix, every_digits_tried = solve_sudoku(result_matrix, result_matrix, every_digits_tried)
 
-
-  solved_sudoku_matrix = solve_sudoku(sudoku_matrix)
   result_string = convert_matrix_into_string(solved_sudoku_matrix)
-  puts result_string
+  #puts result_string
 end
 
 main()
 
-class Tree
-  attr_accessor :children, :value
-
-  def initialize(v)
-    @value = v
-    @children = []
+def ssolve_sudoku(sudoku_matrix, result_matrix, every_digits_tried)
+  every_result_found = true
+  at_least_one_result_found = false
+  result_matrix.each_with_index do |raw, i|
+    result_matrix[i].each_with_index do |element, j|
+      digits_tried = []
+      if result_matrix[i][j] == nil
+        digits_tried = try_with_all_digits(result_matrix, i, j, every_digits_tried)
+        every_digits_tried << digits_tried
+        if digits_tried[-1]
+          result_matrix[i][j] = digits_tried[-1]
+          at_least_one_result_found = false
+        else
+          every_result_found = false
+        end
+      end
+    end
   end
-end
-
-t = Tree.new(7)
-t.children << Tree.new(3)
-t.children << Tree.new(11)
-
-t.value              # 7
-t.children[0].value  # 3
-t.children[1].value  # 11
-
-def test()
-  digit = try_with_all_digits(sudoku_matrix, 0, 0)
-  tree_root = SudokuNode.new(digit)
-  p tree_root
+  p "every digits tried: #{every_digits_tried}"
   puts
-  digit = try_with_all_digits(sudoku_matrix, 0, 3)
-  tree_root.childrens << SudokuNode.new(digit, true)
-  p tree_root
-  p tree_root.childrens
+  #p sudoku_matrix
+  #puts
+  p "result matrix: #{result_matrix}"
   puts
-  p digit = try_with_all_digits(sudoku_matrix, 0, 5)
-  tree_root.childrens << SudokuNode.new(digit, true)
-  p tree_root
-  p tree_root.childrens
+  #solve_sudoku(result_matrix, result_matrix,every_digits_tried[-1]) if !every_result_found
+  return result_matrix, every_digits_tried
 end

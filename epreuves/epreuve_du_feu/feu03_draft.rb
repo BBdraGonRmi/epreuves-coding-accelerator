@@ -53,28 +53,29 @@ end
 def try_with_all_digits(sudoku_matrix, row_index, column_index)
   (1..9).each do |n|
     digit = try_with_digit(sudoku_matrix, row_index, column_index, n)
-    #p result
     return digit if digit
   end
   return false
 end
 
 def solve_sudoku(sudoku_matrix)
-  every_result_found = true
   sudoku_matrix.each_with_index do |raw, i|
     sudoku_matrix[i].each_with_index do |element, j|
       if sudoku_matrix[i][j] == nil
         digit = try_with_all_digits(sudoku_matrix, i, j)
         if digit
           sudoku_matrix[i][j] = digit
-          at_least_one_result_found = false
+          if solve_sudoku(sudoku_matrix)
+            return sudoku_matrix
+          else
+            sudoku_matrix[i][j] = nil
+          end
         else
-          every_result_found = false
+          return false
         end
       end
     end
   end
-  #solve_sudoku(sudoku_matrix) if !every_result_found
   return sudoku_matrix
 end
 
