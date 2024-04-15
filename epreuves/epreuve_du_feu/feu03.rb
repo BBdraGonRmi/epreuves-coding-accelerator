@@ -89,6 +89,7 @@ def main()
   arguments = arguments_are_valid(ARGV, 1)
   sudoku_file_data = file_name_is_valid(arguments[0]).read
   sudoku_matrix = put_file_in_a_digital_matrix(sudoku_file_data, /\./)
+  sudoku_file_data.close
   if solve_sudoku(sudoku_matrix)
     result_string = convert_matrix_into_string(sudoku_matrix)
     puts result_string

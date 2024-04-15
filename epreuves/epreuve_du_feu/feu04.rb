@@ -8,49 +8,22 @@ def arguments_are_valid(arguments, arguments_number)
   end
 end
 
-def parameters_are_digits(parameters)
-  parameters.each do |character|
-    if Integer(character, exception: false) == nil
-      puts "Error: each size parameter must be a digit"
-      exit
-    end
+def file_name_is_valid(file_name)
+  begin
+    file = File.open(file_name)
+  rescue Errno::ENOENT
+    puts "Error: file not found"
+    exit
   end
-  return parameters
-end
-
-def parameters_are_greater_than_zero(parameters)
-  parameters.each do |digit|
-    if Integer(digit) < 1
-      puts "Error: each size parameter must be greater than 0"
-      exit
-    end
-  end
-  return parameters
+  return file
 end
 
 #UTILITY FUNCTIONS
-def generate_board(x, y, density)
-  #arguments = arguments_are_valid(ARGV, 3)
-  parameters = parameters_are_digits([x, y, density])
-  parameters = parameters_are_greater_than_zero(parameters_are_digits([x, y, density]))
-  x = Integer(parameters[0])
-  y = Integer(parameters[1])
-  density = Float(parameters[2])
-  puts "#{y}.xo"
-  (0...y).each do |i|
-    (0...x).each do |j|
-      print ((rand(y) * 2 < density) ? "x" : ".")
-    end
-    puts
-  end
-end
-
-
-def put_string_in_a_matrix(string, nil_character)
+def put_string_in_a_matrix(string)
   matrix_line = []
   full_matrix = []
   matrix_column_index = 0
-  file.each_char do |character|
+  string.each_char do |character|
     if character =~ /\n/
       matrix_column_index += 1
       full_matrix << matrix_line
@@ -61,7 +34,43 @@ def put_string_in_a_matrix(string, nil_character)
     matrix_line << character
   end
   full_matrix << matrix_line
+  full_matrix.shift
   return full_matrix
 end
 
-generate_board(1, 1, 1)
+def find_a_square(board, row_index, column_index)
+  raw_length = board.length
+  column_length = board[1].length
+  (row_index...board.length).each do |i|
+    raw_length = (i - row_index + 1)
+    p "raw size: #{raw_length}"
+    puts
+    (column_index...board[i].length).each do |j|
+      if raw_length >= column_length
+        p "coordinates: #{i}, #{j}"
+        p "raw size: #{raw_length}"
+        p "column size: #{column_length}"
+        square_size = raw_length
+        return square_size
+      end
+      if board[i][j] == "x"
+        if (j - column_index) <= column_length
+          column_length = (j - column_index)
+          p "coordinates: #{i}, #{j}"
+          p "column size: #{column_length}"
+          puts
+        end
+      end
+    end
+  end
+  return square_size
+end
+
+#RESOLUTION DISPLAY FUNCTION
+def main()
+  arguments = arguments_are_valid(ARGV, 1)
+  board = put_string_in_a_matrix(file_name_is_valid("feu04_board.txt"))
+  p square = find_a_square(board, 1, 13)
+end
+
+main()
