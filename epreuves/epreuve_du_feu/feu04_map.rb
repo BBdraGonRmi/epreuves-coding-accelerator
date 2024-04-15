@@ -55,6 +55,8 @@ def generate_board_file(x, y, density)
   File.foreach("map_.txt") { |line| puts line }
 end
 
+
+
 #RESOLUTION FUNCTION
 def main()
   if ARGV.length == 0
