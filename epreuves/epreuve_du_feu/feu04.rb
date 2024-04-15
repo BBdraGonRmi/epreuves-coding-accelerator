@@ -83,7 +83,7 @@ end
 #RESOLUTION DISPLAY FUNCTION
 def main()
   arguments = arguments_are_valid(ARGV, 1)
-  board = put_string_in_a_matrix(file_name_is_valid("map_.txt"))
+  board = put_string_in_a_matrix(file_name_is_valid("feu04_board.txt"))
   squares_array = []
   largest_square, start_coordinates, end_coordinates = 0
   board.each_with_index do |raw, i|

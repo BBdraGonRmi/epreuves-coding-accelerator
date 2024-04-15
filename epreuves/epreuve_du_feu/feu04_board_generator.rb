@@ -40,8 +40,8 @@ end
 
 #UTILITY FUNCTIONS
 def generate_board_file(x, y, density)
-  if File.exist?("map_.txt")
-    File.open("map_.txt", "w") { |f|
+  if File.exist?("feu04_board.txt")
+    File.open("feu04_board.txt", "w") { |f|
     f.write "#{y}.xo\n"
     (0...y).each do |i|
       (0...x).each do |j|
@@ -52,7 +52,7 @@ def generate_board_file(x, y, density)
     f.close
     }
   end
-  File.foreach("map_.txt") { |line| puts line }
+  File.foreach("feu04_board.txt") { |line| puts line }
 end
 
 
