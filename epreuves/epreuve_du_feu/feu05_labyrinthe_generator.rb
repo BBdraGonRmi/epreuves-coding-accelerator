@@ -88,7 +88,7 @@ end
 def main()
   file_name_is_valid("feu05_labyrinthe.txt") ? file = file_name_is_valid("feu05_labyrinthe.txt") : exit
   if ARGV.length == 0
-    generate_labyrinthe_file(file, rand(10...20), rand(10...20), "* o12", "$")
+    generate_labyrinthe_file(file, rand(10...20), rand(20...50), "* o12", "$")
   else
     file, height, width, characters, gates = parse_arguments(ARGV)
     exit if !file || !height || !width || !characters || !gates
