@@ -1,5 +1,8 @@
+#CONSTANT
+FILE = "feu05_maze.txt"
+
 #UTILITY FUNCTIONS
-def generate_labyrinthe_file(file, height, width, characters, gates)
+def generate_maze_file(file, height, width, characters, gates)
   entry_gate = rand(width - 4) + 2
   exit_gate = rand(width - 4) + 2
   File.open(file, "w") { |f|
@@ -20,9 +23,10 @@ def generate_labyrinthe_file(file, height, width, characters, gates)
     end
     f.close
   }
+  return file
 end
 
-#ERROR HANDLING FUNCTIONS
+#ERROR HANDLING
 def arguments_are_valid(arguments, arguments_number)
   if arguments.length != arguments_number
       puts "Usage: ruby program_name.rb + #{arguments_number} arguments"
@@ -61,43 +65,33 @@ def parameter_length_is_valid(parameter, parameter_length)
   end
 end
 
-def file_name_is_valid(file_name)
-  begin
-    file = File.open(file_name)
-  rescue Errno::ENOENT
-    puts "Error: file not found"
-    return false
-  end
-  return file
-end
-
-#PARSING FUNCTIONS
+#PARSING
 def parse_arguments(arguments)
-  arguments = arguments_are_valid(ARGV, 5)
-  file = file_name_is_valid(arguments[0])
-  if parameters_are_digits([arguments[1], arguments[2]])
-    digit_parameters = parameters_are_greater_than_zero([arguments[1], arguments[2]])
-    height, width = Integer(arguments[1]), Integer(arguments[2])
-  end
-  characters = parameter_length_is_valid(arguments[3], 5)
-  gates = parameter_length_is_valid(arguments[4], 1)
-  return file, height, width, characters, gates
-end
-
-#RESOLUTION FUNCTION
-def main()
-  file_name_is_valid("feu05_labyrinthe.txt") ? file = file_name_is_valid("feu05_labyrinthe.txt") : exit
-  if ARGV.length == 0
-    generate_labyrinthe_file(file, rand(10...20), rand(20...50), "* o12", "$")
+  if arguments.length == 0
+    height, width, characters, gates = rand(10...20), rand(20...50), "* o12", "$"
   else
-    file, height, width, characters, gates = parse_arguments(ARGV)
-    exit if !file || !height || !width || !characters || !gates
-    generate_labyrinthe_file(file, height, width, characters, gates)
+    arguments = arguments_are_valid(ARGV, 4)
+    if arguments
+      if parameters_are_digits([arguments[0], arguments[1]])
+        digit_parameters = parameters_are_greater_than_zero([arguments[0], arguments[1]])
+        height, width = Integer(arguments[0]), Integer(arguments[1])
+      end
+      characters = parameter_length_is_valid(arguments[2], 5)
+      gates = parameter_length_is_valid(arguments[3], 1)
+    end
   end
-  display(file)
+  return height, width, characters, gates
 end
 
-#DISPLAY FUNCTION
+#RESOLUTION
+def main()
+  height, width, characters, gates = parse_arguments(ARGV)
+  exit if !height || !width || !characters || !gates
+  generate_maze_file(FILE, height, width, characters, gates)
+  display(FILE)
+end
+
+#DISPLAY
 def display(file)
   File.foreach(file) { |line| print line }
 end

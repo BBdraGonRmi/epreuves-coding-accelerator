@@ -1,17 +1,8 @@
+# CONSTANTS
 SUB_EXPRESSION_ARRAY_index = 0
 EXPRESSION_ARRAY_index = 1
 SUB_EXPRESSION_INDEX_index = 2
 SIGN_index = -1
-
-#ERROR HANDLING FUNCTIONS
-def arguments_are_valid(arguments, arguments_number)
-  if arguments.length != arguments_number
-      puts "Usage: ruby program_name.rb + #{arguments_number} arguments"
-      exit
-  else
-      return arguments
-  end
-end
 
 #UTILITY FUNCTIONS
 def put_expression_in_an_array(expression)
@@ -156,13 +147,38 @@ def solve_full_expression(expression_array)
   solve_full_expression(insert_result_in_array(result, expression_array, sub_expression_index))
 end
 
+#ERROR HANDLING
+def arguments_are_valid(arguments, arguments_number)
+  if arguments.length != arguments_number
+      puts "Usage: ruby program_name.rb + #{arguments_number} arguments"
+      return false
+  else
+      return arguments[0]
+  end
+end
 
-#RESOLUTION & DISPLAY FUNCTION
+#PARSING
+def parse_arguments(argument)
+  argument = arguments_are_valid(ARGV, 1)
+  if argument
+    expression_array = put_expression_in_an_array(argument)
+    return expression_array
+  else
+    return false
+  end
+end
+
+#RESOLUTION
 def main()
-  argument = arguments_are_valid(ARGV, 1)[0]
-  expression_array = put_expression_in_an_array(argument)
+  expression_array = parse_arguments(ARGV)
+  exit if !expression_array
   expression_result = solve_full_expression(expression_array)
-  puts expression_result
+  display(expression_result)
+end
+
+#DISPLAY
+def display(string)
+  puts string
 end
 
 main()

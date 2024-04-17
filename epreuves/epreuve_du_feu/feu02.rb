@@ -1,23 +1,3 @@
-#ERROR HANDLING FUNCTIONS
-def arguments_are_valid(arguments, arguments_number)
-  if arguments.length != arguments_number
-      puts "Usage: ruby program_name.rb arguments"
-      exit
-  else
-      return arguments
-  end
-end
-
-def file_name_is_valid(file_name)
-  begin
-    file = File.open(file_name)
-  rescue Errno::ENOENT
-    puts "Error: file not found"
-    exit
-  end
-  return file
-end
-
 #UTILITY FUNCTIONS
 def put_file_in_a_matrix(file, nil_character)
   matrix_line = []
@@ -126,6 +106,54 @@ def convert_matrix_into_string(matrix)
   return matrix_string
 end
 
+#ERROR HANDLING
+def arguments_are_valid(arguments, arguments_number)
+  if arguments.length != arguments_number
+      puts "Usage: ruby program_name.rb + #{arguments_number} arguments"
+      return false
+  else
+      return arguments
+  end
+end
+
+def file_name_is_valid(file_name)
+  begin
+    file = File.open(file_name)
+  rescue Errno::ENOENT
+    puts "Error: file not found"
+    exit
+  end
+  return file
+end
+
+#PARSING
+def parse_arguments(arguments)
+  arguments = arguments_are_valid(ARGV, 2)
+  files = []
+  if arguments
+    arguments.each do |element|
+      files << file_name_is_valid(element)
+    end
+    return files
+  else
+    return false
+  end
+end
+
+#RESOLUTION DISPLAY FUNCTION
+def main()
+  files = parse_arguments(ARGV)
+  exit if !files
+  reference_matrix = put_file_in_a_matrix(files[0], /\s/)
+  matrix_to_find = put_file_in_a_matrix(files[1], /\s/)
+  coordinates_string = find_matrices_match(reference_matrix, matrix_to_find)
+  if coordinates_string
+    result_matrix = build_result_matrix(reference_matrix, matrix_to_find, coordinates_string)
+    matrix_string = convert_matrix_into_string(result_matrix)
+  end
+  display_result(coordinates_string, matrix_string)
+end
+
 #DISPLAY FUNCTION
 def display_result(coordinates_string, matrix_string)
   if coordinates_string
@@ -135,22 +163,6 @@ def display_result(coordinates_string, matrix_string)
   else
     puts "Unfindable!"
   end
-end
-
-
-#RESOLUTION DISPLAY FUNCTION
-def main()
-  arguments = arguments_are_valid(ARGV, 2)
-  board_file_data = file_name_is_valid(arguments[0]).read
-  to_find_file_data = file_name_is_valid(arguments[1]).read
-  reference_matrix = put_file_in_a_matrix(board_file_data, /\s/)
-  matrix_to_find = put_file_in_a_matrix(to_find_file_data, /\s/)
-  coordinates_string = find_matrices_match(reference_matrix, matrix_to_find)
-  if coordinates_string
-    result_matrix = build_result_matrix(reference_matrix, matrix_to_find, coordinates_string)
-    matrix_string = convert_matrix_into_string(result_matrix)
-  end
-  display_result(coordinates_string, matrix_string)
 end
 
 main()

@@ -41,19 +41,19 @@ end
 
 def find_the_next_possible_steps(maze, y, x)
   nord_sud_est_ouest = [[-1, 0], [1, 0], [0, -1], [0, 1]]
-  next_possibles_steps = []
+  next_possible_steps = []
   (nord_sud_est_ouest).each do |c|
     c_y = (y + c[0]) if (y + c[0]) >= 0 && (y + c[0]) <= maze.length
     c_x = (x + c[1]) if (x + c[1]) >= 0 && (x + c[1]) <= maze[y].length
     if c_y && c_x
       if maze[c_y][c_x] == nil
-        next_possibles_steps << [c_y, c_x]
+        next_possible_steps << [c_y, c_x]
       elsif maze[(y + c[0])][(x + c[1])] == "2"
-        next_possibles_steps << [(y + c[0]), (x + c[1])]
+        next_possible_steps << [(y + c[0]), (x + c[1])]
       end
     end
   end
-  return next_possibles_steps
+  return next_possible_steps
 end
 
 def find_minimum_distance(maze)
@@ -64,32 +64,16 @@ def find_minimum_distance(maze)
   distance_counter = 0
   next_possible_steps = []
   while steps_to_process != []
-
-    p "steps to process: #{steps_to_process}"
-
     (steps_to_process).each do |step|
-
-      p "processing step: #{step}"
-
       predecessor = [step[0], step[1]]
-
       steps_to_add = find_the_next_possible_steps(maze, step[0],step[1])
       steps_to_add.each do |step|
-        #labyrinthe[step[0]][step[1]] = predecessor
         if maze[step[0]][step[1]] == "2"
           maze[step[0]][step[1]] = predecessor
-          maze.each do |raw|
-            p raw
-          end
-          puts
-
           return distance_counter
         else
           next_possible_steps << step
           maze[step[0]][step[1]] = predecessor
-
-          p "next_possible_steps: #{next_possible_steps}"
-
         end
       end
     end
@@ -97,16 +81,12 @@ def find_minimum_distance(maze)
     steps_to_process = []
     (next_possible_steps).each { |step| steps_to_process << step}
     next_possible_steps = []
-
-    p "new steps to process: #{steps_to_process}"
-    p maze
-    puts
   end
 
   return false
 end
 
-def highlight_the_path(maze, predecessors_maze)
+def find_the_path(maze, predecessors_maze)
   y_start, x_start = find_the_entrance(maze)
   y_exit, x_exit = find_the_exit(maze)
   path_step = predecessors_maze[y_exit][x_exit]
@@ -140,7 +120,7 @@ def convert_maze_into_string(maze, title)
   return maze_string
 end
 
-#ERROR HANDLING FUNCTIONS
+#ERROR HANDLING
 def arguments_are_valid(arguments, arguments_number)
   if arguments.length != arguments_number
     puts "Usage: ruby program_name.rb + #{arguments_number} arguments"
@@ -160,14 +140,14 @@ def file_name_is_valid(file_name)
   return file
 end
 
-#PARSING FUNCTIONS
+#PARSING
 def parse_arguments(arguments)
   arguments = arguments_are_valid(ARGV, 1)
   file = file_name_is_valid(arguments[0])
   return file
 end
 
-#RESOLUTION FUNCTION
+#RESOLUTION
 def main()
   file = parse_arguments(ARGV)
   exit if !file
@@ -178,15 +158,15 @@ def main()
     puts "Error: unsolvable maze"
     result = convert_maze_into_string(maze, title)
   else
-    maze_path = highlight_the_path(maze, predecessors_maze)
+    maze_path = find_the_path(maze, predecessors_maze)
     result = convert_maze_into_string(maze_path, title)
   end
   display(result)
 end
 
-#DISPLAY FUNCTION
+#DISPLAY
 def display(string)
-  puts string
+  print string
 end
 
 main()

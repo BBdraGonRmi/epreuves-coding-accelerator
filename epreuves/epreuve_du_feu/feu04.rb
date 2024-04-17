@@ -1,23 +1,3 @@
-#ERROR HANDLING FUNCTIONS
-def arguments_are_valid(arguments, arguments_number)
-  if arguments.length != arguments_number
-      puts "Usage: ruby program_name.rb + #{arguments_number} arguments"
-      exit
-  else
-      return arguments
-  end
-end
-
-def file_name_is_valid(file_name)
-  begin
-    file = File.open(file_name)
-  rescue Errno::ENOENT
-    puts "Error: file not found"
-    exit
-  end
-  return file
-end
-
 #UTILITY FUNCTIONS
 def put_string_in_a_matrix(string)
   matrix_line = []
@@ -80,10 +60,42 @@ def convert_matrix_into_string(matrix)
   return matrix_string
 end
 
-#RESOLUTION DISPLAY FUNCTION
-def main()
+#ERROR HANDLING
+def arguments_are_valid(arguments, arguments_number)
+  if arguments.length != arguments_number
+      puts "Usage: ruby program_name.rb + #{arguments_number} arguments"
+      exit
+  else
+      return arguments
+  end
+end
+
+def file_name_is_valid(file_name)
+  begin
+    file = File.open(file_name)
+  rescue Errno::ENOENT
+    puts "Error: file not found"
+    exit
+  end
+  return file
+end
+
+#PARSING
+def parse_arguments(argument)
   arguments = arguments_are_valid(ARGV, 1)
-  board = put_string_in_a_matrix(file_name_is_valid("feu04_board.txt"))
+  if arguments
+    file = file_name_is_valid(arguments[0])
+    return file
+  else
+    return false
+  end
+end
+
+#RESOLUTION
+def main()
+  file = parse_arguments(ARGV)
+  exit if !file
+  board = put_string_in_a_matrix(file)
   squares_array = []
   largest_square, start_coordinates, end_coordinates = 0
   board.each_with_index do |raw, i|
@@ -96,7 +108,13 @@ def main()
     end
   end
   result_board = build_result_board(board, start_coordinates, end_coordinates)
-  puts string_board = convert_matrix_into_string(board)
+  board_string = convert_matrix_into_string(board)
+  display(board_string)
+end
+
+#DISPLAY
+def display(string)
+puts string
 end
 
 main()
